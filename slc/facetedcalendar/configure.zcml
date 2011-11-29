@@ -6,6 +6,7 @@
     i18n_domain="slc.facetedcalendar">
 
   <five:registerPackage package="." initialize=".initialize" />
+  <include package=".browser"/>
 
   <genericsetup:registerProfile
       name="default"
@@ -14,6 +15,20 @@
       description="Installs the slc.facetedcalendar package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
-  <!-- -*- extra stuff goes here -*- -->
+
+  <class class="Products.ATContentTypes.content.topic.ATTopic">
+      <implements interface="slc.facetedcalendar.interfaces.IFacetedCalendarMarker" />
+  </class>
+
+  <adapter
+       provides="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarTopicEventDict"
+       for="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarMarker
+            slc.facetedcalendar.interfaces.IProductLayer"
+       factory=".adapter.TopicEventDict" />
+
+  <adapter
+       provides="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarCatalogSearch"
+       for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+       factory=".adapter.CatalogSearch" />
   
 </configure>
