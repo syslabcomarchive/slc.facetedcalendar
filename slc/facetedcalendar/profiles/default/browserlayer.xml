@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layers>
+  <layer
+      name="slc.facetedcalendar"
+      interface="slc.facetedcalendar.interfaces.IProductLayer"
+      />
+</layers>
+
