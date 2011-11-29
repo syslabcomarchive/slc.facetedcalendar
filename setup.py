@@ -5,7 +5,7 @@ version = '0.1'
 
 setup(name='slc.facetedcalendar',
       version=version,
-      description="Man was not supposed to play God, but we did it anyway by combining eea.facetednavigation with Solgema.fullcalendar. Muwhahahahaha...",
+      description="",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from
@@ -25,11 +25,10 @@ setup(name='slc.facetedcalendar',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'Products.CMFPlone',
+          'collective.js.fullcalendar',
       ],
       entry_points="""
-      # -*- Entry points: -*-
-
       [z3c.autoinclude.plugin]
       target = plone
       """,
