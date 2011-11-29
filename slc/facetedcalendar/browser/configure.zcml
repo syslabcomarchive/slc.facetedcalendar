@@ -1,0 +1,23 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="slc.facetedcalendar">
+
+  <browser:resourceDirectory
+      name="slc.facetedcalendar.stylesheets"
+      directory="stylesheets"
+      layer="..interfaces.IProductLayer"
+      />
+
+  <browser:page
+      for="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarMarker"
+      name="facetedcalendar"
+      class=".view.FacetedCalendarView"
+      template="templates/view.pt"
+      allowed_interface="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarView"
+      permission="zope.Public"
+      layer="..interfaces.IProductLayer"
+      />
+
+</configure>

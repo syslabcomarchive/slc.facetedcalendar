@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="Solgema.fullcalendar">
+<head>
+  <metal:slot fill-slot="style_slot">
+        <style media="all"  type="text/css" tal:content="structure python:path('here/solgemafullcalendar_colors.css')">
+        </style>
+  </metal:slot>
+    <metal:slot fill-slot="javascript_head_slot" tal:omit-tag="">
+        <script type="text/javascript"
+            tal:attributes="src string:${context/absolute_url}/solgemafullcalendar_vars.js"></script>
+        <script type="text/javascript"
+            tal:attributes="src string:${context/absolute_url}/solgemafullcalendar.js"></script>
+    </metal:slot>
+</head>
+<body>
+    <metal:slot fill-slot="content-core"
+     tal:define="portal context/@@plone_portal_state/portal;
+                 use_types_blacklist request/use_types_blacklist | python:True;
+                 use_navigation_root request/use_navigation_root | python:True;
+                 Batch python:modules['Products.CMFPlone'].Batch;
+                 b_size python:30;b_start python:0;b_start request/b_start | b_start;
+                 results python:view.queryCatalog(REQUEST=request,show_all=1,use_types_blacklist=use_types_blacklist, use_navigation_root=use_navigation_root, b_start=b_start, b_size=b_size+1);
+                 site_properties context/portal_properties/site_properties;
+                 desc_length site_properties/search_results_description_length;
+                 desc_ellipsis site_properties/ellipsis;
+                 searchterm request/SearchableText|nothing;
+                 use_view_action site_properties/typesUseViewActionInListings|python:();
+                 kssClassesView context/@@kss_field_decorator_view;
+                 getKssClasses nocall:kssClassesView/getKssClassesInlineEditable;
+                 templateId template/getId">
+
+        <div class="facetedcalendar-parameters"
+            tal:define="view nocall: context/@@search-facets | nothing"
+            tal:condition="python: view"
+            tal:content="structure python: view(results=results)" />
+
+        <div class="facetedcalendar-calendar">
+             <div id="calendar" tal:attributes="class string:query-${view/getCriteriaClass}">
+                <div id="event_edit_container"></div>
+            </div>
+        </div>
+    </metal:slot>
+</body>
+</html>
