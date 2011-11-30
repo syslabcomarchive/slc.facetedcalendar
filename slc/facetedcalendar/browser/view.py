@@ -19,4 +19,5 @@ class PropertiesGuard(BaseActionView):
 
     def __call__(self):
         selected_layout = getattr(self.context, 'layout', '')
-        return selected_layout == 'facetedcalendar'
+        return selected_layout in [ 'facetedcalendar',
+                                    'solgemafullcalendar_view']

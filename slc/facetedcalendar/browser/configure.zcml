@@ -10,13 +10,36 @@
       layer="..interfaces.IProductLayer"
       />
 
+  <browser:resourceDirectory
+      name="slc.facetedcalendar.javascripts"
+      directory="javascripts"
+      layer="..interfaces.IProductLayer"
+      />
+
   <browser:page
-      for="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarMarker"
+      for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
       name="facetedcalendar"
       class=".view.FacetedCalendarView"
       template="templates/view.pt"
       allowed_interface="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarView"
       permission="zope.Public"
+      layer="..interfaces.IProductLayer"
+      />
+
+  <browser:page
+      for="*"
+      name="iscalendarlayout"
+      class=".view.PropertiesGuard"
+      permission="cmf.ModifyPortalContent"
+      layer="..interfaces.IProductLayer"
+      />
+
+  <browser:page
+      for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+      name="render_faceted_parameters_box"
+      attribute="render_faceted_parameters_box"
+      class=".ajax.AjaxView"
+      permission="zope2.View"
       layer="..interfaces.IProductLayer"
       />
 

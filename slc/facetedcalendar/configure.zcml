@@ -16,19 +16,17 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+  <!-- XXX: See if this cannot be done in setuphandlers -->
   <class class="Products.ATContentTypes.content.topic.ATTopic">
       <implements interface="slc.facetedcalendar.interfaces.IFacetedCalendarMarker" />
   </class>
 
   <adapter
-       provides="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarTopicEventDict"
-       for="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarMarker
-            slc.facetedcalendar.interfaces.IProductLayer"
-       factory=".adapter.TopicEventDict" />
-
-  <adapter
        provides="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarCatalogSearch"
        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
        factory=".adapter.CatalogSearch" />
+
+  <adapter factory=".adapter.ColorIndexGetter" />
+  <adapter factory=".adapter.TopicEventSource" />
   
 </configure>
