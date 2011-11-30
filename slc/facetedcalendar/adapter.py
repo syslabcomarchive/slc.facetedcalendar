@@ -1,26 +1,22 @@
 import pickle
-from zope.component import queryAdapter
-
+from zope.interface import Interface
+from zope.interface import implements
+from zope.component import adapts
+from Acquisition import aq_inner
+from DateTime import DateTime
 from Products.CMFCore.utils import getToolByName
-
-from collective.solr.flare import PloneFlare
-
+from Products.ATContentTypes.interfaces.topic import IATTopic
+from collective.solr.interfaces import IFlare
 from Solgema.fullcalendar.browser import adapters
 from Solgema.fullcalendar import interfaces
-from Solgema.fullcalendar.browser.solgemafullcalendar_views import getColorIndex
-
-try:
-    from plone.event.interfaces import IRecurrenceSupport
-    HAS_RECCURENCE_SUPPORT = True
-except ImportError:
-    HAS_RECCURENCE_SUPPORT = False
+from slc.facetedcalendar.interfaces import IProductLayer
 
 class CatalogSearch(adapters.SolgemaFullcalendarCatalogSearch):
 
     def searchResults(self, args):
         """ Force solr use.
 
-            Also, store and retrieve args from a pickle, since solr 
+            Also, store and retrieve args from a pickle, since solr's mangling
             returns them with dates removed.
         """
         catalog = getToolByName(self.context, 'portal_catalog')
@@ -30,59 +26,45 @@ class CatalogSearch(adapters.SolgemaFullcalendarCatalogSearch):
         results = catalog.searchResults(qdict)
         return results
                             
-class TopicEventDict(adapters.SolgemaFullcalendarTopicEventDict):
 
-    def dictFromFlare(self, flare, args):
-        eventsFilter = queryAdapter(self.context,
-                                    interfaces.ISolgemaFullcalendarEditableFilter)
-        editpaths = eventsFilter.filterEvents(args)
-
-        memberid = self.context.portal_membership.getAuthenticatedMember().id
-        editable = (memberid == flare.Creator or flare.getURL() in editpaths)
-
-        if getattr(flare, 'SFAllDay', None) in [False, True]:
-            allday = flare.SFAllDay
-        else:
-            allday = (flare.end - flare.start > 1.0)
-
-        copycut = ''
-        if self.copyDict and flare.getPath() == self.copyDict['url']:
-            copycut = self.copyDict['op'] == 1 and ' event_cutted' or ' event_copied'
-
-        typeClass = ' type-'+flare.portal_type
-        colorIndex = getColorIndex(self.context, self.request, brain=flare)
-        extraClass = self.getExtraClass(flare)
-        if HAS_RECCURENCE_SUPPORT:
-            occurences = IRecurrenceSupport(flare.getObject()).occurences()
-        else:
-            occurences = [(flare.start.rfc822(), flare.end.rfc822())]
-
-        events = []
-        for occurence_start, occurence_end in occurences:
-            events.append({
-                "id": "UID_%s" % (flare.UID),
-                "title": flare.Title,
-                "description": flare.Description,
-                "start": HAS_RECCURENCE_SUPPORT and occurence_start.isoformat() or occurence_start,
-                "end": HAS_RECCURENCE_SUPPORT and occurence_end.isoformat() or occurence_end,
-                "url": flare.getURL(),
-                "editable": editable,
-                "allDay": allday,
-                "className": "contextualContentMenuEnabled state-" + \
-                                str(flare.review_state) + \
-                                (editable and " editable" or "") + \
-                                copycut + typeClass+colorIndex+extraClass})
-        return events
+class ColorIndexGetter(adapters.ColorIndexGetter):
+    """ Reuses Solgema.fullcalendar's ColorIndexGetter but adapt's
+        collective.solr's IFlare type instead of ICatalogBrain.
+    """
+    adapts(Interface, Interface, IFlare)
 
 
-    def createDict(self, items=[], args={}):
-        li = []
-        for item in items:
-            if type(item) == PloneFlare:
-                li.extend(self.dictFromFlare(item, args))
-            elif hasattr(item, '_unrestrictedGetObject'):
-                li.extend(self.dictFromBrain(item, args))
-            else:
-                li.extend(self.dictFromObject(item))
-        return li
+class TopicEventSource(adapters.TopicEventSource):
+    """ """
+    implements(interfaces.IEventSource)
+    adapts(IATTopic, IProductLayer)
+
+    def getFacetedEvents(self):
+        context = aq_inner(self.context)
+        request = self.request
+        response = request.response
+
+        args, filters = self._getCriteriaArgs()
+        args['start'] = {'query': DateTime(int(request.get('end'))), 'range':'max'}
+        args['end'] = {'query': DateTime(int(request.get('start'))), 'range':'min'}
+
+        if getattr(self.calendar, 'overrideStateForAdmin', True) and args.has_key('review_state'):
+            pm = getToolByName(context,'portal_membership')
+            user = pm.getAuthenticatedMember()
+            if user and user.has_permission('Modify portal content', context):
+                del args['review_state']
+
+        if context.layout == 'facetedcalendar':
+            facet_dict = {
+                    'use_solr': True,
+                    'facet': 'true',
+                    'facet.field': ['SearchableText', 
+                                    'review_state', 
+                                    'portal_type', 
+                                    'start', 
+                                    'end'],
+                    }
+            args.update(facet_dict)
+
+        return self._getBrains(args, filters)
 
