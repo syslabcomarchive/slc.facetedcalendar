@@ -21,6 +21,7 @@ class CatalogSearch(adapters.SolgemaFullcalendarCatalogSearch):
         """
         catalog = getToolByName(self.context, 'portal_catalog')
         # XXX: This is temporary until the bug in solr is fixed.
+        # Try: from copy import deepcopy
         qdict = pickle.loads(pickle.dumps(args))
         qdict['use_solr'] = True
         results = catalog.searchResults(qdict)
@@ -45,8 +46,30 @@ class TopicEventSource(adapters.TopicEventSource):
         response = request.response
 
         args, filters = self._getCriteriaArgs()
-        args['start'] = {'query': DateTime(int(request.get('end'))), 'range':'max'}
-        args['end'] = {'query': DateTime(int(request.get('start'))), 'range':'min'}
+        start_date = DateTime(int(request.get('start')))
+        end_date = DateTime(int(request.get('end')))
+        args['start'] = {'query': end_date, 'range':'max'}
+        args['end'] = {'query': start_date, 'range':'min'}
+
+        facet_dict = {
+                'use_solr': True,
+                'facet': 'true',
+                'facet.field': [],
+                'facet.range': [],
+                }
+        catalog = getToolByName(self.context, 'portal_catalog')
+        for index in args.keys():
+            if index in catalog.indexes():
+                if type(args[index]) == dict and 'range' in args[index].keys():
+                    facet_dict['facet.range'].append(index)
+                else:
+                    facet_dict['facet.field'].append(index)
+
+        # XXX: This still feels very fragile... what about other range queries
+        # that are not dates?
+        facet_dict['facet.range.start'] = 'NOW/DAY-6MONTHS'
+        facet_dict['facet.range.end'] = 'NOW/DAY+6MONTHS'
+        facet_dict['facet.range.gap'] = '+7DAYS'
 
         if getattr(self.calendar, 'overrideStateForAdmin', True) and args.has_key('review_state'):
             pm = getToolByName(context,'portal_membership')
@@ -54,17 +77,11 @@ class TopicEventSource(adapters.TopicEventSource):
             if user and user.has_permission('Modify portal content', context):
                 del args['review_state']
 
-        if context.layout == 'facetedcalendar':
-            facet_dict = {
-                    'use_solr': True,
-                    'facet': 'true',
-                    'facet.field': ['SearchableText', 
-                                    'review_state', 
-                                    'portal_type', 
-                                    'start', 
-                                    'end'],
-                    }
-            args.update(facet_dict)
+        # Put the query pars on the request so that the facet parameters box
+        # knows about them
+        args.update(facet_dict)
+        for key, value in args.items():
+            request.set(key, value)
 
         return self._getBrains(args, filters)
 
