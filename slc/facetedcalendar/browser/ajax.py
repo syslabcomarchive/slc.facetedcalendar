@@ -1,3 +1,5 @@
+from Acquisition import aq_inner
+from zope.component import getMultiAdapter
 from zope.interface import implements
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
@@ -9,4 +11,7 @@ class AjaxView(BrowserView):
 
     def render_faceted_parameters_box(self, start, end):
         """ """ 
-        return self.template()
+        context = aq_inner(self.context)
+        view = getMultiAdapter((context, self.request), name='facetedcalendar')
+        results = view.queryCatalog()
+        return self.template(results=results)
