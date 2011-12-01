@@ -43,4 +43,21 @@
       layer="..interfaces.IProductLayer"
       />
 
+  <browser:page
+      for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+      name="search-facets"
+      template="templates/facets.pt"
+      class="slc.facetedsearch.browser.facets.SearchFacetsView"
+      layer="..interfaces.IProductLayer"
+      permission="zope2.View" 
+      />
+
+  <browser:page
+      for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+      name="user_query_submitted"
+      class=".view.UserQuerySubmitted"
+      layer="..interfaces.IProductLayer"
+      permission="zope2.View" 
+      />
+
 </configure>
