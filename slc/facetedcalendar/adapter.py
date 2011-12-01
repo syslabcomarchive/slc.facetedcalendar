@@ -5,6 +5,7 @@ from zope.component import adapts
 from Acquisition import aq_inner
 from DateTime import DateTime
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.permissions import ModifyPortalContent
 from Products.ATContentTypes.interfaces.topic import IATTopic
 from collective.solr.interfaces import IFlare
 from Solgema.fullcalendar.browser import adapters
@@ -71,17 +72,21 @@ class TopicEventSource(adapters.TopicEventSource):
         facet_dict['facet.range.end'] = 'NOW/DAY+6MONTHS'
         facet_dict['facet.range.gap'] = '+7DAYS'
 
-        if getattr(self.calendar, 'overrideStateForAdmin', True) and args.has_key('review_state'):
-            pm = getToolByName(context,'portal_membership')
-            user = pm.getAuthenticatedMember()
-            if user and user.has_permission('Modify portal content', context):
-                del args['review_state']
-
         # Put the query pars on the request so that the facet parameters box
         # knows about them
         args.update(facet_dict)
         for key, value in args.items():
             request.set(key, value)
+
+        if getattr(self.calendar, 'overrideStateForAdmin', True) and \
+                args.has_key('review_state'):
+            # Solgema.fullcalendare removes the 'review_state' form the query,
+            # we instead want it to have all the possible values, so that they
+            # appear checked in the facet parameters box.
+            pm = getToolByName(context,'portal_membership')
+            member = pm.getAuthenticatedMember()
+            if member and member.has_permission(ModifyPortalContent, context):
+                args['review_state'] = catalog.uniqueValuesFor('review_state')
 
         return self._getBrains(args, filters)
 
