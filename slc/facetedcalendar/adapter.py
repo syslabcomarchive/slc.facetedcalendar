@@ -72,12 +72,6 @@ class TopicEventSource(adapters.TopicEventSource):
         facet_dict['facet.range.end'] = 'NOW/DAY+6MONTHS'
         facet_dict['facet.range.gap'] = '+7DAYS'
 
-        # Put the query pars on the request so that the facet parameters box
-        # knows about them
-        args.update(facet_dict)
-        for key, value in args.items():
-            request.set(key, value)
-
         if getattr(self.calendar, 'overrideStateForAdmin', True) and \
                 args.has_key('review_state'):
             # Solgema.fullcalendare removes the 'review_state' form the query,
@@ -87,6 +81,12 @@ class TopicEventSource(adapters.TopicEventSource):
             member = pm.getAuthenticatedMember()
             if member and member.has_permission(ModifyPortalContent, context):
                 args['review_state'] = catalog.uniqueValuesFor('review_state')
+
+        # Put the query pars on the request so that the facet parameters box
+        # knows about them
+        args.update(facet_dict)
+        for key, value in args.items():
+            request.set(key, value)
 
         return self._getBrains(args, filters)
 
