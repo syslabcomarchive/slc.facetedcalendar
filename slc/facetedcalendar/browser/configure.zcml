@@ -54,6 +54,15 @@
 
     <browser:page
         for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        name="save_form_in_session"
+        attribute="save_form_in_session"
+        class=".ajax.AjaxView"
+        permission="cmf.ModifyPortalContent"
+        layer="..interfaces.IProductLayer"
+        />
+
+    <browser:page
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
         name="search-facets"
         template="templates/facets.pt"
         class="slc.facetedsearch.browser.facets.SearchFacetsView"

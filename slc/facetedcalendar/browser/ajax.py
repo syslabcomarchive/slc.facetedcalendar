@@ -3,6 +3,7 @@ from zope.component import getMultiAdapter
 from zope.interface import implements
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from slc.facetedcalendar import utils
 from interfaces import IAjaxView
 
 class AjaxView(BrowserView):
@@ -20,3 +21,8 @@ class AjaxView(BrowserView):
         context = aq_inner(self.context)
         view = getMultiAdapter((context, self.request), name='facetedcalendar_embeddedconfig')
         return view()
+
+    def save_form_in_session(self, **kw):
+        """ """
+        utils.save_form_in_session(self.context, self.request)
+        

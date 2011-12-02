@@ -35,5 +35,20 @@ $(document).ready(function() {
             $('div#portal-facetsquery').show('fast');
         }).remove();
     });
+
+    $('#browsing-menu input[type=checkbox]').live('click', function () { 
+        var query_string = $("form#browsing-menu").serialize();
+        $.ajax({
+            url: '@@save_form_in_session?'+query_string,
+            cache: false,
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(textStatus);
+                console.log(errorThrown);
+            },
+            success: function(html) {
+                var calendar = jq('#calendar').fullCalendar('refetchEvents');
+            }
+        });
+    });
 });
             
