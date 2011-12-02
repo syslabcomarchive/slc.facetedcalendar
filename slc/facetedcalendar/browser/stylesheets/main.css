@@ -1,8 +1,21 @@
-div.facetedcalendar-parameters {
-    float: right:
+div#facetedcalendar-container {
+    clear: both;
+}
+
+div#facetedcalendar-parameters {
+    float: right !important;
+    width: 20%
 }
 
 div.facetedcalendar-calendar {
     float: left;
-    width: 75%;
+    width: 79%
+}
+
+.faceted-parameters-box-heading {
+    float: left;
+}
+
+a#facetedcalendar-config {
+    float: right;
 }

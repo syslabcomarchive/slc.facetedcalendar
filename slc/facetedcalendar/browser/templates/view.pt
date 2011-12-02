@@ -16,16 +16,18 @@
 </head>
 <body>
     <metal:slot fill-slot="content-core">
-        <div id="facetedcalendar-parameters">
-            <img src="spinner.gif"/>
-            <!--
-            <metal:macro use-macro="context/@@slc_facetedcalendar_macros/macros/facet-parameters"/>
-            -->
-        </div>
+        <div id="facetedcalendar-container">
+            <div id="facetedcalendar-parameters">
+                <img src="spinner.gif"/>
+                <!--
+                <metal:macro use-macro="context/@@slc_facetedcalendar_macros/macros/facet-parameters"/>
+                -->
+            </div>
 
-        <div class="facetedcalendar-calendar">
-             <div id="calendar" tal:attributes="class string:query-${view/getCriteriaClass}">
-                <div id="event_edit_container"></div>
+            <div class="facetedcalendar-calendar">
+                <div id="calendar" tal:attributes="class string:query-${view/getCriteriaClass}">
+                    <div id="event_edit_container"></div>
+                </div>
             </div>
         </div>
     </metal:slot>
