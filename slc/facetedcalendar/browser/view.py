@@ -4,8 +4,10 @@ from Acquisition import aq_inner
 from plone.z3cform.layout import FormWrapper
 from Products.Five.browser import BrowserView
 from Solgema.fullcalendar import interfaces
-from Solgema.fullcalendar.browser.views import SolgemaFullcalendarView
-from Solgema.fullcalendar.browser.actions import BaseActionView 
+from Solgema.fullcalendar.browser.solgemafullcalendar_views import \
+    SolgemaFullcalendarView
+from Solgema.fullcalendar.browser.solgemafullcalendar_actions import \
+    BaseActionView 
 from slc.facetedcalendar.browser.interfaces import IFacetsConfigView
 from slc.facetedcalendar.browser.form import FacetsConfigForm
 from slc.facetedcalendar import utils
