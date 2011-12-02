@@ -29,6 +29,11 @@
     <adapter factory=".adapter.ColorIndexGetter" />
     <adapter factory=".adapter.TopicEventSource" />
 
+    <adapter
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        provides="slc.facetedsearch.interfaces.IDefaultRangesGetter"
+        factory=".adapter.DefaultRangesGetter" />
+
     <utility
         component=".vocabulary.FacetedCalendarParametersFactory"
         name="slc.facetedcalendar.vocabularies.facetedcalendarparameters"

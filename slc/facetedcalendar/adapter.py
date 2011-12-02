@@ -1,4 +1,5 @@
 import pickle
+from zope.annotation.interfaces import IAnnotations
 from zope.interface import Interface
 from zope.interface import implements
 from zope.component import adapts
@@ -15,6 +16,9 @@ from Products.PluginIndexes.DateIndex.DateIndex import DateIndex
 from collective.solr.interfaces import IFlare
 from Solgema.fullcalendar.browser import adapters
 from Solgema.fullcalendar import interfaces
+
+from slc.facetedsearch.interfaces import IDefaultRangesGetter
+
 from slc.facetedcalendar.interfaces import IProductLayer
 
 class CatalogSearch(adapters.SolgemaFullcalendarCatalogSearch):
@@ -67,28 +71,17 @@ class TopicEventSource(adapters.TopicEventSource):
                     value = {'range':range, 'query': query}
                 args[key] = value
 
-        # XXX: Also for range?
-        for field in form.get('facet.field'):
-            if not args.has_key(field):
-                # XXX: Ugh. Solr ignores fields that are [] or None, so we need
-                # to give some value that we know will not return hits
-                args[field] = 'slc.facetedcalendar.dummy'
-
         return args
 
 
     def _updateCriteriaArgs(self, args):
         request = self.request
         context = aq_inner(self.context)
-        catalog = getToolByName(self.context, 'portal_catalog')
-        # FIXME
-        try:
-            start_date = DateTime(int(request.get('start')))
-            end_date = DateTime(int(request.get('end')))
-            args['start'] = {'query': end_date, 'range':'max'}
-            args['end'] = {'query': start_date, 'range':'min'}
-        except TypeError:
-            pass
+        catalog = getToolByName(context, 'portal_catalog')
+        start_date = DateTime(int(request.get('start')))
+        end_date = DateTime(int(request.get('end')))
+        args['start'] = {'query': end_date, 'range':'max'}
+        args['end'] = {'query': start_date, 'range':'min'}
         
         if getattr(self.calendar, 'overrideStateForAdmin', True) and \
                 args.has_key('review_state'):
@@ -98,24 +91,18 @@ class TopicEventSource(adapters.TopicEventSource):
             pm = getToolByName(context,'portal_membership')
             member = pm.getAuthenticatedMember()
             if member and member.has_permission(ModifyPortalContent, context):
-                args['review_state'] = catalog.uniqueValuesFor('review_state')
+                # args['review_state'] = catalog.uniqueValuesFor('review_state')
+                del args['review_state']
+        return args
                 
-        facet_dict = {
-                'facet.field': [],
-                'facet.range': [],
-                }
-        for index in args.keys():
-            if index in catalog.indexes():
-                if type(args[index]) == dict and 'range' in args[index].keys():
-                    facet_dict['facet.range'].append(index)
-                else:
-                    facet_dict['facet.field'].append(index)
 
-        # XXX: This still feels very fragile... what about other range queries
-        # that are not dates?
-        facet_dict['facet.range.start'] = 'NOW/DAY-6MONTHS'
-        facet_dict['facet.range.end'] = 'NOW/DAY+6MONTHS'
-        facet_dict['facet.range.gap'] = '+7DAYS'
+    def _addFacetArgs(self, args):
+        annotations = IAnnotations(self.context)
+        facets = annotations['slc.facetedcalendar.facets']
+        facet_dict = {'use_solr':True, 'facet':'true'}
+        for facet in facets:
+            facet_dict['facet.field'] = list(facets)
+
         args.update(facet_dict)
         return args
 
@@ -132,7 +119,7 @@ class TopicEventSource(adapters.TopicEventSource):
             self.request.form[key] = value
 
 
-    def _getArgsAndFilters(self, clear_form=False):
+    def _getArgsAndFilters(self, faceting=False):
         context = aq_inner(self.context)
         sdm = getToolByName(context, 'session_data_manager')
         session = sdm.getSessionData()
@@ -140,8 +127,9 @@ class TopicEventSource(adapters.TopicEventSource):
         form = session.get(path, {}) 
 
         if form.get('form_submitted', None):
-            # XXX: This is ugly :(
-            if clear_form:
+            if faceting:
+                # The query box (which requires faceting info) is called after
+                # the events are queried for. So we can now remove the flag.
                 del form['form_submitted']
             args = self._getFormArgs(form)
             filters = []
@@ -155,8 +143,6 @@ class TopicEventSource(adapters.TopicEventSource):
         context = aq_inner(self.context)
         args, filters = self._getArgsAndFilters()
         self._updateRequest(args)
-        args['use_solr'] = True
-        args['facet']= 'true'
         brains = self._getBrains(args, filters)
         topicEventsDict = getMultiAdapter(
                                 (context, self.request),
@@ -166,10 +152,20 @@ class TopicEventSource(adapters.TopicEventSource):
 
     def getFacetedEvents(self):
         context = aq_inner(self.context)
-        args, filters = self._getArgsAndFilters(clear_form=True)
-        args['use_solr'] = True
-        args['facet']= 'true'
+        args, filters = self._getArgsAndFilters(faceting=True)
+        args = self._addFacetArgs(args)
         self._updateRequest(args)
         return self._getBrains(args, filters)
 
+
+class DefaultRangesGetter(object):
+    implements(IDefaultRangesGetter)
+    adapts(Interface)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getDefaultRanges(self):
+        """ """
+        return []
 

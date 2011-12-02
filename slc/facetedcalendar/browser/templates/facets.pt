@@ -76,53 +76,16 @@
                     </div>
                 </tal:repeat>
             </tal:checkbox>
-
-            <tal:select
-               tal:condition="submenu/isrange">
-                 <tal:fromto repeat="fromto python:['from', 'to']">
-                    <select class="submenu-content facet_range" 
-                        tal:attributes="name python:submenu['id'] + '.query:record:list';
-                                        id python:submenu['id'] + '_' + fromto;">
-                        <tal:repeat repeat="item submenu/content">
-                            <option tal:attributes="value item/id;
-                                                    class python:item['selected'] and 'selected_facet' or '';"
-                                    tal:condition="python:not item.get('selected_' + fromto, False)">
-                                <label>
-                                    <tal:title tal:replace="item/title"/>
-                                </label>
-                                <span>
-                                    <tal:count tal:replace="string:(${item/count})" />
-                                </span>
-                            </option>
-                            <option tal:attributes="value item/id;
-                                                    class python:item['selected'] and 'selected_facet' or '';"
-                                    selected="selected"
-                                    tal:condition="python:item.get('selected_' + fromto, False)">
-                                <label>
-                                    <tal:title tal:replace="item/title"/>
-                                </label>
-                                <span>
-                                    <tal:count tal:replace="string:(${item/count})" />
-                                </span>
-                            </option>
-                        </tal:repeat>
-                    </select>
-                </tal:fromto>
-                <input type="hidden" tal:attributes="name python:submenu['id'] + '.range:record';" value="min:max" />
-            </tal:select>
-
-              <div class="submenu_more" style="display: none">
-                  <a i18n:translate="browsing_submenu_more">Show more...</a>
-              </div>
-              <div class="submenu_less" style="display: none">
-                  <a i18n:translate="browsing_submenu_less">Show less...</a>
-              </div>
-
-
-            </fieldset>
-            <div class="visualClear"></div>
-          </tal:submenus>
-          <tal:others replace="structure view/getHiddenFields" />
-          <input type="submit" value="Submit" />
+            <div class="submenu_more" style="display: none">
+                <a i18n:translate="browsing_submenu_more">Show more...</a>
+            </div>
+            <div class="submenu_less" style="display: none">
+                <a i18n:translate="browsing_submenu_less">Show less...</a>
+            </div>
+        </fieldset>
+        <div class="visualClear"></div>
+        </tal:submenus>
+        <tal:others replace="structure view/getHiddenFields" />
+        <input type="submit" value="Submit" />
     </form>
 </div>

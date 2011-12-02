@@ -51,4 +51,3 @@ class FacetsConfigView(FormWrapper):
     label = _(u"Facet Configuration Settings")
     form = FacetsConfigForm
 
-
