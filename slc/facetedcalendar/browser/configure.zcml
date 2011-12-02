@@ -4,60 +4,88 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="slc.facetedcalendar">
 
-  <browser:resourceDirectory
-      name="slc.facetedcalendar.stylesheets"
-      directory="stylesheets"
-      layer="..interfaces.IProductLayer"
-      />
+    <browser:resourceDirectory
+        name="slc.facetedcalendar.stylesheets"
+        directory="stylesheets"
+        layer="..interfaces.IProductLayer"
+        />
 
-  <browser:resourceDirectory
-      name="slc.facetedcalendar.javascripts"
-      directory="javascripts"
-      layer="..interfaces.IProductLayer"
-      />
+    <browser:resourceDirectory
+        name="slc.facetedcalendar.javascripts"
+        directory="javascripts"
+        layer="..interfaces.IProductLayer"
+        />
 
-  <browser:page
-      for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
-      name="facetedcalendar"
-      class=".view.FacetedCalendarView"
-      template="templates/view.pt"
-      allowed_interface="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarView"
-      permission="zope.Public"
-      layer="..interfaces.IProductLayer"
-      />
+    <browser:page
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        name="facetedcalendar"
+        class=".view.FacetedCalendarView"
+        template="templates/view.pt"
+        allowed_interface="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarView"
+        permission="zope.Public"
+        layer="..interfaces.IProductLayer"
+        />
 
-  <browser:page
-      for="*"
-      name="iscalendarlayout"
-      class=".view.PropertiesGuard"
-      permission="cmf.ModifyPortalContent"
-      layer="..interfaces.IProductLayer"
-      />
+    <browser:page
+        for="*"
+        name="iscalendarlayout"
+        class=".view.PropertiesGuard"
+        permission="cmf.ModifyPortalContent"
+        layer="..interfaces.IProductLayer"
+        />
 
-  <browser:page
-      for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
-      name="render_faceted_parameters_box"
-      attribute="render_faceted_parameters_box"
-      class=".ajax.AjaxView"
-      permission="zope2.View"
-      layer="..interfaces.IProductLayer"
-      />
+    <browser:page
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        name="render_faceted_parameters_box"
+        attribute="render_faceted_parameters_box"
+        class=".ajax.AjaxView"
+        permission="zope2.View"
+        layer="..interfaces.IProductLayer"
+        />
 
-  <browser:page
-      for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
-      name="search-facets"
-      template="templates/facets.pt"
-      class="slc.facetedsearch.browser.facets.SearchFacetsView"
-      layer="..interfaces.IProductLayer"
-      permission="zope2.View" 
-      />
+    <browser:page
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        name="render_faceted_parameters_config"
+        attribute="render_faceted_parameters_config"
+        class=".ajax.AjaxView"
+        permission="cmf.ModifyPortalContent"
+        layer="..interfaces.IProductLayer"
+        />
 
-  <browser:page
-      for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
-      name="user_query_submitted"
-      class=".view.UserQuerySubmitted"
-      layer="..interfaces.IProductLayer"
-      permission="zope2.View" 
-      />
+    <browser:page
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        name="search-facets"
+        template="templates/facets.pt"
+        class="slc.facetedsearch.browser.facets.SearchFacetsView"
+        layer="..interfaces.IProductLayer"
+        permission="zope2.View" 
+        />
+
+    <browser:page
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        name="user_query_submitted"
+        class=".view.UserQuerySubmitted"
+        layer="..interfaces.IProductLayer"
+        permission="zope2.View" 
+        />
+
+    <browser:page
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        name="facetedcalendar_config"
+        class=".view.FacetsConfigView"
+        permission="cmf.ModifyPortalContent"
+        layer="..interfaces.IProductLayer"
+        allowed_interface=".interfaces.IFacetsConfigView"
+        />
+
+    <browser:page
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        name="facetedcalendar_embeddedconfig"
+        class=".view.FacetsConfigView"
+        permission="cmf.ModifyPortalContent"
+        layer="..interfaces.IProductLayer"
+        allowed_interface=".interfaces.IFacetsConfigView"
+        template="templates/facets_config.pt"
+        />
 
 </configure>

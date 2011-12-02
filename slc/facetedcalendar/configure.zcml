@@ -5,28 +5,33 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="slc.facetedcalendar">
 
-  <five:registerPackage package="." initialize=".initialize" />
-  <include package=".browser"/>
+    <five:registerPackage package="." initialize=".initialize" />
+    <include package=".browser"/>
 
-  <genericsetup:registerProfile
-      name="default"
-      title="slc.facetedcalendar"
-      directory="profiles/default"
-      description="Installs the slc.facetedcalendar package"
-      provides="Products.GenericSetup.interfaces.EXTENSION"
-      />
+    <genericsetup:registerProfile
+        name="default"
+        title="slc.facetedcalendar"
+        directory="profiles/default"
+        description="Installs the slc.facetedcalendar package"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
 
-  <!-- XXX: See if this cannot be done in setuphandlers -->
-  <class class="Products.ATContentTypes.content.topic.ATTopic">
-      <implements interface="slc.facetedcalendar.interfaces.IFacetedCalendarMarker" />
-  </class>
+    <!-- XXX: See if this cannot be done in setuphandlers -->
+    <class class="Products.ATContentTypes.content.topic.ATTopic">
+        <implements interface="slc.facetedcalendar.interfaces.IFacetedCalendarMarker" />
+    </class>
 
-  <adapter
-       provides="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarCatalogSearch"
-       for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
-       factory=".adapter.CatalogSearch" />
+    <adapter
+        provides="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarCatalogSearch"
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        factory=".adapter.CatalogSearch" />
 
-  <adapter factory=".adapter.ColorIndexGetter" />
-  <adapter factory=".adapter.TopicEventSource" />
+    <adapter factory=".adapter.ColorIndexGetter" />
+    <adapter factory=".adapter.TopicEventSource" />
+
+    <utility
+        component=".vocabulary.FacetedCalendarParametersFactory"
+        name="slc.facetedcalendar.vocabularies.facetedcalendarparameters"
+        /> 
   
 </configure>

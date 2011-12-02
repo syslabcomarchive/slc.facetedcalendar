@@ -14,3 +14,9 @@ class AjaxView(BrowserView):
         context = aq_inner(self.context)
         view = getMultiAdapter((context, self.request), name='facetedcalendar')
         return self.template(results=view.get_results())
+
+    def render_faceted_parameters_config(self):
+        """ """ 
+        context = aq_inner(self.context)
+        view = getMultiAdapter((context, self.request), name='facetedcalendar_embeddedconfig')
+        return view()

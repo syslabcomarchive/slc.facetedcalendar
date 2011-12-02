@@ -1,14 +1,18 @@
 <div id="portal-searchfacets"
-     i18n:domain="plone"
-     tal:condition="view/getCounts">
+     i18n:domain="slc.facetedcalendar">
 
-    <h4 i18n:translate="heading_calendar_search_facets">
-        Limit calendar search results...
+    <h4 class="faceted-parameters-box-heading"
+        i18n:translate="heading_calendar_search_facets">
+        Filter Calendar Events
     </h4>
+    <a href="@@facetedcalendar_config"
+       id="facetedcalendar-config">
+        <img src="maintenance_icon.png" alt="Configure">
+        Edit
+    </a>
 
     <form id="browsing-menu" action="@@user_query_submitted" method="post"
           tal:define="menu view/getMenu;">
-
         <input type="hidden" name="form_submitted" value="1"/>
         <tal:submenus repeat="submenu menu/content">
             <fieldset class="submenu widget-fieldset"
