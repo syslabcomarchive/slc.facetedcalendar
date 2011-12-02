@@ -23,9 +23,17 @@ $(document).ready(function() {
                 console.log(errorThrown);
             },
             success: function(html) {
-                $('#facetedcalendar-parameters').html(html);
+                $('div#portal-facetsquery').hide('fast', function() {
+                    $('div#portal-facetsconfig').hide().append(html).fadeIn('fast');
+                });
             }
         });
+    });
+    $("input#form-buttons-cancel_facetedcalendar_config").live('click', function(e) {
+        e.preventDefault();
+        $('div#portal-facetsconfig-form').hide('fast', function() {
+            $('div#portal-facetsquery').show('fast');
+        }).remove();
     });
 });
             

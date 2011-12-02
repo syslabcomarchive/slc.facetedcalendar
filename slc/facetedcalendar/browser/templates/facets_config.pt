@@ -1,11 +1,8 @@
-<div id="portal-searchfacets"
-     i18n:domain="slc.facetedcalendar">
-
+<div id="portal-facetsconfig-form">
     <h4 class="faceted-parameters-box-heading"
         i18n:translate="heading_calendar_search_facets">
         Configure Calendar Filter
     </h4>
-     
+    
     <div id="facets-config" tal:content="structure view/contents" />
-
 </div>

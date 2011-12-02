@@ -1,6 +1,9 @@
 <div id="portal-searchfacets"
      i18n:domain="slc.facetedcalendar">
 
+<div id="portal-facetsconfig"><!-- AJAX --></div>
+
+<div id="portal-facetsquery">
     <h4 class="faceted-parameters-box-heading"
         i18n:translate="heading_calendar_search_facets">
         Filter Calendar Events
@@ -88,4 +91,5 @@
         <tal:others replace="structure view/getHiddenFields" />
         <input type="submit" value="Submit" />
     </form>
+</div>
 </div>

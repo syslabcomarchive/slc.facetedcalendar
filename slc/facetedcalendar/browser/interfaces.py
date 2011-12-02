@@ -19,7 +19,8 @@ class IFacetsConfigForm(Interface):
                     vocabulary="slc.facetedcalendar.vocabularies.facetedcalendarparameters"
                 ),
             )
-    save = button.Button(title=_(u"Save"))
+    save_facetedcalendar_config = button.Button(title=_(u"Save"))
+    cancel_facetedcalendar_config = button.Button(title=_(u"Cancel"))
 
 
 class IFacetsConfigView(Interface):
