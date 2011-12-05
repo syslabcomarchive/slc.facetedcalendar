@@ -11,7 +11,7 @@ setup(name='slc.facetedcalendar',
       # Get more strings from
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
-        "Framework :: Plone",
+        "Framework :: Plone :: 4.1",
         "Programming Language :: Python",
         ],
       keywords='',
@@ -26,6 +26,7 @@ setup(name='slc.facetedcalendar',
       install_requires=[
           'setuptools',
           'Products.CMFPlone',
+          'collective.solr',
           'collective.js.fullcalendar',
           'Solgema.fullcalendar',
       ],
