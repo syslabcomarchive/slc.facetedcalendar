@@ -115,6 +115,9 @@ class TopicEventSource(adapters.TopicEventSource):
             self.request.set('form', {})
 
         for key, value in args.items():
+            if isinstance(value, tuple):
+                # Convert tuples to lists. ZUtils.make_hidden_input requires it
+                value = list(value)
             self.request[key] = value
             self.request.form[key] = value
 
