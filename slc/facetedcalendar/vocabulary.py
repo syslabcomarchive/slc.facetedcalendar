@@ -2,8 +2,6 @@ from zope.interface import implements
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
-from Products.PluginIndexes.FieldIndex.FieldIndex import FieldIndex
-from Products.CMFCore.utils import getToolByName
 
 class FacetedCalendarParameters(object):
     """ Provides a list of catalog indexes that can be used for faceted
@@ -12,12 +10,12 @@ class FacetedCalendarParameters(object):
     implements(IVocabularyFactory)
 
     def __call__(self, context):
-        catalog = getToolByName(context, 'portal_catalog')
+        # This used to be determined dynamically, but for now to keep things
+        # simple we restrict it to these...
         items = []
-        for index in catalog._catalog.indexes.values():
-            if isinstance(index, FieldIndex):
-                items.append(SimpleTerm(index.id))
-            
+        items.append(SimpleTerm('SearchableText'))
+        items.append(SimpleTerm('Creator'))
+        items.append(SimpleTerm('review_state'))
         return SimpleVocabulary(items)
 
 FacetedCalendarParametersFactory = FacetedCalendarParameters()
