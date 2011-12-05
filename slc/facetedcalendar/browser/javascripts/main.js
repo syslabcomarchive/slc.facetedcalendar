@@ -14,12 +14,11 @@ function updateCalendar() {
 }
 
 $(document).ready(function() {
-    $('#facetedcalendar-parameters').bind('fullcalendar-rendered', function(e, data) {
-        var dates = data.data;
+    $(document).bind('fullcalendarRendered', function(e, data) {
         $.ajax({
             url: '@@render_faceted_parameters_box',
             cache: false,
-            data: {start: dates['start:int'], end: dates['end:int'] },
+            data: {start: data.start.valueOf()/1000, end: data.end.valueOf()/1000 },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(textStatus);
                 console.log(errorThrown);
