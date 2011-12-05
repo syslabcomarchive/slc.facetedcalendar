@@ -1,3 +1,18 @@
+function updateCalendar() {
+    var query_string = $("form#browsing-menu").serialize();
+    $.ajax({
+        url: '@@save_form_in_session?'+query_string,
+        cache: false,
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(textStatus);
+            console.log(errorThrown);
+        },
+        success: function(html) {
+            var calendar = jq('#calendar').fullCalendar('refetchEvents');
+        }
+    });
+}
+
 $(document).ready(function() {
     $('#facetedcalendar-parameters').bind('fullcalendar-rendered', function(e, data) {
         var dates = data.data;
@@ -35,20 +50,12 @@ $(document).ready(function() {
             $('div#portal-facetsquery').show('fast');
         }).remove();
     });
-
     $('#browsing-menu input[type=checkbox]').live('click', function () { 
-        var query_string = $("form#browsing-menu").serialize();
-        $.ajax({
-            url: '@@save_form_in_session?'+query_string,
-            cache: false,
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(textStatus);
-                console.log(errorThrown);
-            },
-            success: function(html) {
-                var calendar = jq('#calendar').fullCalendar('refetchEvents');
-            }
-        });
+        updateCalendar();
+    });
+    $("form#browsing-menu").live('submit', function (e) {
+        e.preventDefault();
+        updateCalendar();
     });
 });
             
