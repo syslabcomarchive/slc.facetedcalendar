@@ -27,6 +27,7 @@ setup(name='slc.facetedcalendar',
           'setuptools',
           'Products.CMFPlone',
           'collective.js.fullcalendar',
+          'Solgema.fullcalendar',
       ],
       entry_points="""
       [z3c.autoinclude.plugin]
