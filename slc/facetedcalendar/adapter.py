@@ -98,7 +98,7 @@ class TopicEventSource(adapters.TopicEventSource):
 
     def _addFacetArgs(self, args):
         annotations = IAnnotations(self.context)
-        facets = annotations['slc.facetedcalendar.facets']
+        facets = annotations.get('slc.facetedcalendar.facets', set())
         facet_dict = {'use_solr':True, 'facet':'true'}
         for facet in facets:
             facet_dict['facet.field'] = list(facets)

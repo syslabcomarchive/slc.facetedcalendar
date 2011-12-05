@@ -16,6 +16,15 @@
         layer="..interfaces.IProductLayer"
         />
 
+    <browser:menuItem
+        for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
+        menu="plone_displayviews"
+        title="Faceted Calendar"
+        action="@@facetedcalendar"
+        description="Change this collection into a faceted calendar"
+        layer="..interfaces.IProductLayer"
+        />
+
     <browser:page
         for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
         name="facetedcalendar"
