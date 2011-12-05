@@ -65,7 +65,7 @@
         for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
         name="search-facets"
         template="templates/facets.pt"
-        class="slc.facetedsearch.browser.facets.SearchFacetsView"
+        class=".facets.SearchFacetsView"
         layer="..interfaces.IProductLayer"
         permission="zope2.View" 
         />
