@@ -30,7 +30,7 @@
         for="*"
         name="iscalendarlayout"
         class=".view.PropertiesGuard"
-        permission="cmf.ModifyPortalContent"
+        permission="zope.Public"
         layer="..interfaces.IProductLayer"
         />
 
