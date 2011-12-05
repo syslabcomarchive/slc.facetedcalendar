@@ -39,7 +39,6 @@ class PropertiesGuard(BaseActionView):
         return selected_layout in [ 'facetedcalendar',
                                     'solgemafullcalendar_view']
 
-
 class FacetsConfigView(FormWrapper):
     implements(IFacetsConfigView)
     id = u'calendarfacetsconfig'

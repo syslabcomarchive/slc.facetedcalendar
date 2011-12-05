@@ -4,94 +4,95 @@
 <div id="portal-facetsconfig"><!-- AJAX --></div>
 
 <div id="portal-facetsquery">
-    <h4 class="faceted-parameters-box-heading"
-        i18n:translate="heading_calendar_search_facets">
-        Filter Calendar Events
-    </h4>
-    <a href="@@facetedcalendar_config"
-       id="facetedcalendar-config">
-        <img src="maintenance_icon.png" alt="Configure">
-        Edit
-    </a>
+<h4 class="faceted-parameters-box-heading"
+    i18n:translate="heading_calendar_search_facets">
+    Filter Calendar Events
+</h4>
+<a href="@@facetedcalendar_config"
+    id="facetedcalendar-config">
+    <img src="maintenance_icon.png" alt="Configure">
+    Edit
+</a>
 
-    <form id="browsing-menu" action="@@user_query_submitted" method="post"
-          tal:define="menu view/getMenu;">
-        <input type="hidden" name="form_submitted" value="1"/>
-        <tal:submenus repeat="submenu menu/content">
-            <fieldset class="submenu widget-fieldset"
-                 tal:attributes="id python:'submenu_' + submenu['id'];">
-              <legend class="menu_headline"
-                   tal:attributes="id python:'headline_' + submenu['id'];"
-                   i18n:translate=""
-                   tal:content="submenu/title" />
+<form id="browsing-menu" action="@@user_query_submitted" method="post"
+        tal:define="menu view/getMenu;">
+    <input type="hidden" name="form_submitted" value="1"/>
+    <tal:submenus repeat="submenu python:sorted(menu['content'], key=lambda k:k['title'])">
+    <fieldset class="submenu widget-fieldset"
+            tal:attributes="id python:'submenu_' + submenu['id'];">
 
-              <div class="visualClear"><!-- --></div>
+    <legend class="menu_headline"
+        tal:attributes="id python:'headline_' + submenu['id'];"
+        i18n:translate=""
+        tal:content="submenu/title" />
 
-            <tal:checkbox tal:condition="submenu/isstandard">
-              <div class="submenu-content">
+        <div class="visualClear"><!-- --></div>
+        <tal:checkbox tal:condition="submenu/isstandard">
+            <div class="submenu-content">
+                <tal:if_text condition="not: submenu/content">
+                    <input type="text" 
+                        tal:attributes="name submenu/id;
+                                        value
+                                        python:request.get(submenu['id']);"/>
+                    <input type="submit" value="Search"/>
+                </tal:if_text>
                 <tal:repeat repeat="item submenu/content">
                     <div class="submenu-lvl2"
-                         tal:condition="python:item['count']>=0 or view.showSubmenu(item['content'])">
-                      <div class="submenu_title empty"
-                           tal:attributes="id python:'sub-' + item['id'].replace(':','-').replace('.','_');
-                                           class python:'submenu_title' + (not item['content'] and ' empty' or '');">
+                            tal:condition="python:item['count']>=0 or view.showSubmenu(item['content'])">
+                        <div class="submenu_title empty"
+                            tal:attributes="id python:'sub-' + item['id'].replace(':','-').replace('.','_');
+                                            class python:'submenu_title' + (not item['content'] and ' empty' or '');">
 
-                        <input type="checkbox"
-                           tal:attributes="class python:item['selected'] and 'selected_facet' or '';
-                                           checked python:item['selected'] and 'checked' or '';
-                                           id item/id;
-                                           value item/id;
-                                           name submenu/id;" />
-                        <label tal:attributes="for item/id">
-                            <tal:title tal:replace="item/title"/>
-                        </label>
-                        <span>
-                          <tal:count tal:replace="string:(${item/count})" />
-                        </span>
-                      </div>
+                            <input type="checkbox"
+                                    tal:attributes="class python:item['selected'] and 'selected_facet' or '';
+                                                    checked python:item['selected'] and 'checked' or '';
+                                                    id item/id;
+                                                    value item/id;
+                                                    name submenu/id;" />
+                            <label tal:attributes="for item/id">
+                                <tal:title tal:replace="item/title"/>
+                            </label>
+                            <tal:count tal:replace="string:(${item/count})" />
+                        </div>
 
-                      <ul class="submenu_content"
-                          tal:attributes="id python:'sub-' + item['id'].replace(':','-').replace('.','_');
-                                          class python:'submenu_content';">
-                        <tal:submenu repeat="subitem item/content">
-                          <li class="submenu_item"
-                              tal:define="selected python:subitem.get('clearquery') and 'selected' or 'unselected'"
-                              tal:attributes="class string:submenu_item ${selected}"
-                              tal:condition="python:subitem['count']>0">
+                        <ul class="submenu_content"
+                            tal:condition="item/content"
+                            tal:attributes="id python:'sub-' + item['id'].replace(':','-').replace('.','_');
+                                            class python:'submenu_content';">
+                            <tal:submenu repeat="subitem item/content">
+                            <li class="submenu_item"
+                                tal:define="selected python:subitem.get('clearquery') and 'selected' or 'unselected'"
+                                tal:attributes="class string:submenu_item ${selected}"
+                                tal:condition="python:subitem['count']>0">
 
-                            <a href="#" tal:content="subitem/voc"
-                               tal:condition="subitem/query"
-                               tal:define="query_or_clear python:(True and subitem.get('clearquery', False) or subitem.get('query'))"
-                               tal:attributes="href string:${request/ACTUAL_URL}?${query_or_clear}';
-                                               class python:subitem.has_key('clearquery') and 'selected_facet' or '';"
-                               i18n:translate="" />
-                            <span tal:content="subitem/voc"
-                                  tal:condition="not:subitem/query"
-                                  i18n:translate="" />
-                            <span tal:condition="python:subitem['count'] > 0"
-                                  tal:replace="string:(${subitem/count})" />
-                          </li>
-
-                        </tal:submenu>
-                      </ul>
-
-                      <div class="visualClear"><!-- --></div>
-                    </div>
-                </tal:repeat>
-            </tal:checkbox>
-            <div class="submenu_more" style="display: none">
-                <a i18n:translate="browsing_submenu_more">Show more...</a>
-            </div>
-            <div class="submenu_less" style="display: none">
-                <a i18n:translate="browsing_submenu_less">Show less...</a>
-            </div>
-        </fieldset>
-        <div class="visualClear"></div>
-        </tal:submenus>
-        <tal:others replace="structure view/getHiddenFields" />
-        <!--
-            <input type="submit" value="Submit" />
-        -->
-    </form>
+                                <a href="#" tal:content="subitem/voc"
+                                tal:condition="subitem/query"
+                                tal:define="query_or_clear python:(True and subitem.get('clearquery', False) or subitem.get('query'))"
+                                tal:attributes="href string:${request/ACTUAL_URL}?${query_or_clear}';
+                                                class python:subitem.has_key('clearquery') and 'selected_facet' or '';"
+                                i18n:translate="" />
+                                <span tal:content="subitem/voc"
+                                    tal:condition="not:subitem/query"
+                                    i18n:translate="" />
+                                <span tal:condition="python:subitem['count'] > 0"
+                                    tal:replace="string:(${subitem/count})" />
+                            </li>
+                            </tal:submenu>
+                        </ul>
+                    <div class="visualClear"><!-- --></div>
+                </div>
+            </tal:repeat>
+        </tal:checkbox>
+        <div class="submenu_more" style="display: none">
+            <a i18n:translate="browsing_submenu_more">Show more...</a>
+        </div>
+        <div class="submenu_less" style="display: none">
+            <a i18n:translate="browsing_submenu_less">Show less...</a>
+        </div>
+    </fieldset>
+    <div class="visualClear"></div>
+</tal:submenus>
+<tal:others replace="structure view/getHiddenFields" />
+</form>
 </div>
 </div>
