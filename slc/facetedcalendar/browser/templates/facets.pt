@@ -13,6 +13,7 @@
     <img src="maintenance_icon.png" alt="Configure">
     Edit
 </a>
+<div class="visualClear"><!-- --></div>
 <form id="browsing-menu" action="@@user_query_submitted" method="post"
         tal:define="menu view/getMenu;">
     <input type="hidden" name="form_submitted" value="1"/>
