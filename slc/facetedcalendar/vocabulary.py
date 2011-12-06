@@ -13,8 +13,8 @@ class FacetedCalendarParameters(object):
         # This used to be determined dynamically, but for now to keep things
         # simple we restrict it to these...
         items = []
-        items.append(SimpleTerm('SearchableText'))
         items.append(SimpleTerm('Creator'))
+        items.append(SimpleTerm('SearchableText'))
         items.append(SimpleTerm('review_state'))
         return SimpleVocabulary(items)
 
