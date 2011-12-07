@@ -39,6 +39,14 @@ class PropertiesGuard(BaseActionView):
         return selected_layout in [ 'facetedcalendar',
                                     'solgemafullcalendar_view']
 
+
+class FacetedCalendarPropertiesGuard(BaseActionView):
+
+    def __call__(self):
+        selected_layout = getattr(self.context, 'layout', '')
+        return selected_layout in ['facetedcalendar' ]
+
+
 class FacetsConfigView(FormWrapper):
     implements(IFacetsConfigView)
     id = u'calendarfacetsconfig'

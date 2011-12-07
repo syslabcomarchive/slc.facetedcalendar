@@ -44,6 +44,14 @@
         />
 
     <browser:page
+        for="*"
+        name="isfacetedcalendarlayout"
+        class=".view.FacetedCalendarPropertiesGuard"
+        permission="zope.Public"
+        layer="..interfaces.IProductLayer"
+        />
+
+    <browser:page
         for="slc.facetedcalendar.interfaces.IFacetedCalendarMarker"
         name="render_faceted_parameters_box"
         attribute="render_faceted_parameters_box"
