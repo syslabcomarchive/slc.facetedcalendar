@@ -3,7 +3,7 @@ Introduction
 
 slc.facetedcalendar provides faceted search inside a calendar.
 
-It make's use of `collective.solr`_ for the faceted search and
+It makes use of `collective.solr`_ for the faceted search and
 `Solgema.fullcalendar`_ for the calendar view.
 
 .. _collective.solr: https://github.com/Jarn/collective.solr
