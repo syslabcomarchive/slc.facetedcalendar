@@ -1,6 +1,6 @@
 function updateCalendar() {
-    var query_string = $("form#browsing-menu").serialize();
-    $.ajax({
+    var query_string = jq("form#browsing-menu").serialize();
+    jq.ajax({
         url: '@@save_form_in_session?'+query_string,
         cache: false,
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -13,9 +13,9 @@ function updateCalendar() {
     });
 }
 
-$(document).ready(function() {
-    $(document).bind('fullcalendarRendered', function(e, data) {
-        $.ajax({
+jq(document).ready(function() {
+    jq('#facetedcalendar-parameters').bind('fullcalendarRendered', function(e, data) {
+        jq.ajax({
             url: '@@render_faceted_parameters_box',
             cache: false,
             data: {start: data.start.valueOf()/1000, end: data.end.valueOf()/1000 },
@@ -24,35 +24,35 @@ $(document).ready(function() {
                 console.log(errorThrown);
             },
             success: function(html) {
-                $('#facetedcalendar-parameters').html(html);
+                jq('#facetedcalendar-parameters').html(html);
             }
         });
     });
-    $("a#facetedcalendar-config").live('click', function(e) {
+    jq("a#facetedcalendar-config").live('click', function(e) {
         e.preventDefault();
-        $.ajax({
+        jq.ajax({
             url: '@@render_faceted_parameters_config',
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(textStatus);
                 console.log(errorThrown);
             },
             success: function(html) {
-                $('div#portal-facetsquery').hide('fast', function() {
-                    $('div#portal-facetsconfig').hide().append(html).fadeIn('fast');
+                jq('div#portal-facetsquery').hide('fast', function() {
+                    jq('div#portal-facetsconfig').hide().append(html).fadeIn('fast');
                 });
             }
         });
     });
-    $("input#form-buttons-cancel_facetedcalendar_config").live('click', function(e) {
+    jq("input#form-buttons-cancel_facetedcalendar_config").live('click', function(e) {
         e.preventDefault();
-        $('div#portal-facetsconfig-form').hide('fast', function() {
-            $('div#portal-facetsquery').show('fast');
+        jq('div#portal-facetsconfig-form').hide('fast', function() {
+            jq('div#portal-facetsquery').show('fast');
         }).remove();
     });
-    $('#browsing-menu input[type=checkbox]').live('click', function () { 
+    jq('#browsing-menu input[type=checkbox]').live('click', function () { 
         updateCalendar();
     });
-    $("form#browsing-menu").live('submit', function (e) {
+    jq("form#browsing-menu").live('submit', function (e) {
         e.preventDefault();
         updateCalendar();
     });
