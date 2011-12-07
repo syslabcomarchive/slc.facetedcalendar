@@ -129,11 +129,12 @@ class TopicEventSource(adapters.TopicEventSource):
         path = '/'.join(context.getPhysicalPath())
         form = session.get(path, {}) 
 
-        if form.get('form_submitted', None):
+        # XXX: Make sure this works...
+        if form.get('form.submitted', None):
             if faceting:
                 # The query box (which requires faceting info) is called after
                 # the events are queried for. So we can now remove the flag.
-                del form['form_submitted']
+                del form['form.submitted']
             args = self._getFormArgs(form)
             filters = []
         else:

@@ -16,7 +16,7 @@
 <div class="visualClear"><!-- --></div>
 <form id="browsing-menu" action="@@user_query_submitted" method="post"
         tal:define="menu view/getMenu;">
-    <input type="hidden" name="form_submitted" value="1"/>
+    <input type="hidden" name="form.submitted" value="1" />
     <tal:submenus repeat="submenu python:sorted(menu['content'], key=lambda k:k['title'])">
     <fieldset class="submenu widget-fieldset"
             tal:attributes="id python:'submenu_' + submenu['id'];">
