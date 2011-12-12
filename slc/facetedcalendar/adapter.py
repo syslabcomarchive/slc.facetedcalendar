@@ -17,8 +17,9 @@ from collective.solr.interfaces import IFlare
 from Solgema.fullcalendar.browser import adapters
 from Solgema.fullcalendar import interfaces
 
-from slc.facetedsearch.interfaces import IDefaultRangesGetter
+from collective.solr.browser.facets import facetParameters
 
+from slc.facetedsearch.interfaces import IDefaultRangesGetter
 from slc.facetedcalendar.interfaces import IProductLayer
 
 class CatalogSearch(adapters.SolgemaFullcalendarCatalogSearch):
@@ -97,9 +98,12 @@ class TopicEventSource(adapters.TopicEventSource):
                 
 
     def _addFacetArgs(self, args):
-        annotations = IAnnotations(self.context)
-        facets = annotations.get('slc.facetedcalendar.facets', set())
         facet_dict = {'use_solr':True, 'facet':'true'}
+        annotations = IAnnotations(self.context)
+        facets = annotations.get('slc.facetedcalendar.facets', None)
+        if facets is None:
+            facets, dependencies = facetParameters(self.context, self.request)
+
         for facet in facets:
             facet_dict['facet.field'] = list(facets)
 
@@ -128,8 +132,6 @@ class TopicEventSource(adapters.TopicEventSource):
         session = sdm.getSessionData()
         path = '/'.join(context.getPhysicalPath())
         form = session.get(path, {}) 
-
-        # XXX: Make sure this works...
         if form.get('form.submitted', None):
             if faceting:
                 # The query box (which requires faceting info) is called after
