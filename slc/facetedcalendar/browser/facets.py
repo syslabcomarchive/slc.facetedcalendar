@@ -51,7 +51,6 @@ class SearchFacetsView(BrowserView, facets.FacetMixin):
         self.vocDict = dict()
 
         index_dict = catalog._catalog.indexes
-
         for field in self.facet_fields:
             voc = voctool.getVocabularyByName(field)
             if IVocabulary.providedBy(voc):
@@ -59,14 +58,15 @@ class SearchFacetsView(BrowserView, facets.FacetMixin):
                                         voc.getVocabularyDict(self.context))
             else:
                 content = dict()
-                if facet_counts and not isinstance(index_dict[field], ZCTextIndex):
-                    # If this is not a text index, and we don't have a matching vocabulary, 
-                    # then we fake one.
-                    if field in facet_counts['facet_fields']:
-                        field_values = facet_counts['facet_fields'][field].keys()
+                if not isinstance(index_dict[field], ZCTextIndex):
+                    field_values = catalog.uniqueValuesFor(field)
 
-                    for value in field_values:
-                        content[value] = (self.getValueFriendlyName(field, value), None)
+                    if isinstance(index_dict[field], DateIndex):
+                        for value in field_values:
+                            content[value] = (DateTime(value).strftime('%d.%m.%Y'), None)
+                    else:
+                        for value in field_values:
+                            content[value] = (value, None)
 
                 self.vocDict[field] = (self.getFieldFriendlyName(field), content)
 
@@ -76,14 +76,6 @@ class SearchFacetsView(BrowserView, facets.FacetMixin):
     def getFieldFriendlyName(self, field):
         atct = getToolByName(self.context, 'portal_atct')
         return atct.getIndex(field).friendlyName
-
-
-    def getValueFriendlyName(self, field, value):
-        catalog = getToolByName(self.context, 'portal_catalog')
-        index = catalog._catalog.getIndex(field)
-        if isinstance(index, DateIndex):
-            return DateTime(value).strftime('%d.%m.%Y')
-        return value
 
 
     def getCounts(self):
