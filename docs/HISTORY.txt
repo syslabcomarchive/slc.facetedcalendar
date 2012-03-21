@@ -4,7 +4,7 @@ Changelog
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add MANIFEST.in to explicitly add docs dir. [jcbrand]
 
 
 0.1 (2012-03-21)
