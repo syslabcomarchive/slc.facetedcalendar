@@ -1,2 +1,7 @@
 include *.rst
 graft docs
+recursive-include slc/facetedcalendar *.zcml
+recursive-include slc/facetedcalendar *.dtml
+recursive-include slc/facetedcalendar/locales *.mo
+recursive-include slc/facetedcalendar/locales *.po
+graft slc/facetedcalendar/profiles
